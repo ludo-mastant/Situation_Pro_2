@@ -1,0 +1,41 @@
+# Charte de programmation – Projet WoodyCraft
+
+## Objectif
+
+Cette charte a pour but d'assurer une meilleure organisation du code, de faciliter le travail en équipe et de garantir un projet lisible, propre et maintenable.
+
+## Règles générales
+
+- Le code doit être **clair, lisible et compréhensible** par tous les membres du groupe.
+- Chaque fonctionnalité doit être développée dans une **branche dédiée** avant fusion dans la branche principale.
+- Le code envoyé sur le dépôt doit être **testé** avant d’être poussé.
+- Les fichiers inutiles, temporaires ou générés ne doivent pas être ajoutés au dépôt si cela n’est pas nécessaire.
+
+## Nommage
+
+- Les noms de variables, fonctions, classes et fichiers doivent être **explicites**.
+- Les noms doivent être rédigés de manière cohérente dans tout le projet.
+
+## Mise en forme du code
+
+- L’indentation doit être respectée.
+- Le code doit être correctement aéré.
+- Les blocs de code trop longs doivent être découpés en fonctions.
+- Les commentaires doivent être utiles et non excessifs.
+
+## Commentaires
+
+- Un commentaire doit expliquer une logique importante ou complexe.
+- Il ne doit pas décrire quelque chose d’évident.
+- Chaque partie importante du projet peut être accompagnée d’un court commentaire si nécessaire.
+
+## Travail en équipe
+
+- Avant de commencer une tâche, vérifier qu’elle n’est pas déjà en cours par un autre membre.
+- Avant chaque fusion, relire son code.
+- En cas de modification importante, informer les autres membres du groupe.
+- Le code doit rester cohérent pour que chaque membre puisse le reprendre facilement.
+
+## Conclusion
+
+Cette charte permet de garder un projet propre, cohérent et plus simple à maintenir tout au long du développement de WoodyCraft.
