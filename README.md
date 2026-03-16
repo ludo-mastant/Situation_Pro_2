@@ -152,7 +152,7 @@ Ce diagramme de **cas d’utilisation** illustre les **actions** que l’adminis
 ## Modélisation de la base de données
 
 
-
+![Modèle Base de donnée](images/modele_Bdd_Woody.png)
 
 
 
@@ -164,3 +164,5 @@ Le rythme des sauvegardes sera hebdomadaire. Pour la base de données, des sauve
 
 
 ## Maquette
+
+Lien vers la maquette : https://www.figma.com/design/QKzLHiPBQFO30oGgDKR2Xf/Untitled?node-id=0-1&t=RXbR955ZIDk79btC-1
