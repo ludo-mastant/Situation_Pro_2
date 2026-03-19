@@ -32,7 +32,7 @@ class Puzzle {
 }
 
 class PuzzleService {
-  final String apiUrl = "http://localhost/woodycraftweb/public/api/puzzles"; // URL de l'API Laravel
+  final String apiUrl = "http://groupe1.lycee.local/api/puzzles"; // URL de l'API Laravel
 
   // Fonction pour récupérer tous les puzzles
   Future<List<Puzzle>> fetchPuzzles() async {
