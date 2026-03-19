@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'puzzle_list_page.dart'; // Importer la page d'affichage des puzzles
+import 'puzzle_list_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Puzzles',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PuzzleListPage(), // Affiche la liste des puzzles en page d'accueil
+      home: const PuzzleListPage(),
     );
   }
 }
