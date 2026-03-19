@@ -11,37 +11,21 @@ class PuzzleListPage extends StatefulWidget {
 }
 
 class _PuzzleListPageState extends State<PuzzleListPage> {
-  late Future<List<Puzzle>> futurePuzzles;
-  int _selectedIndex = 1;
-  String _affichage = 'Gestion catalogue';
+  late Future<List<Puzzle>> _futurePuzzles;
 
   @override
   void initState() {
     super.initState();
-    futurePuzzles = PuzzleService().fetchPuzzles();
+    _loadPuzzles();
   }
 
-  void _reloadPuzzles() {
-    setState(() {
-      futurePuzzles = PuzzleService().fetchPuzzles();
-    });
+  void _loadPuzzles() {
+    _futurePuzzles = PuzzleService().fetchPuzzles();
   }
 
-  void _itemClique(int index) {
+  Future<void> _refreshPuzzles() async {
     setState(() {
-      _selectedIndex = index;
-
-      switch (_selectedIndex) {
-        case 0:
-          _affichage = 'Accueil';
-          break;
-        case 1:
-          _affichage = 'Gestion catalogue';
-          break;
-        case 2:
-          _affichage = 'Gestion commandes';
-          break;
-      }
+      _loadPuzzles();
     });
   }
 
@@ -54,7 +38,7 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
     );
 
     if (result == true) {
-      _reloadPuzzles();
+      await _refreshPuzzles();
     }
   }
 
@@ -67,59 +51,18 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
     );
 
     if (result == true) {
-      _reloadPuzzles();
+      await _refreshPuzzles();
     }
-  }
-
-  Widget _buildImageThumb(String image) {
-    return Container(
-      width: 55,
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: image.startsWith('http')
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image, color: Colors.white70);
-                },
-              ),
-            )
-          : const Icon(Icons.image, color: Colors.white70),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_affichage),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _itemClique,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
-            label: 'Catalogue',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Commandes',
-          ),
-        ],
+        title: const Text('Liste des puzzles'),
       ),
       body: FutureBuilder<List<Puzzle>>(
-        future: futurePuzzles,
+        future: _futurePuzzles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -135,7 +78,7 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
 
           if (puzzles.isEmpty) {
             return const Center(
-              child: Text('Aucun puzzle trouvé'),
+              child: Text('Aucun puzzle'),
             );
           }
 
@@ -144,31 +87,12 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
             itemBuilder: (context, index) {
               final puzzle = puzzles[index];
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
-                  leading: _buildImageThumb(puzzle.image),
-                  title: Text(
-                    puzzle.nom,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(puzzle.description),
-                        const SizedBox(height: 6),
-                        Text('Prix : ${puzzle.prix.toStringAsFixed(2)} €'),
-                        Text('Catégorie : ${puzzle.categorieId}'),
-                        Text('Stock : ${puzzle.stock}'),
-                      ],
-                    ),
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _openDetailPage(puzzle),
+              return ListTile(
+                title: Text(puzzle.nom),
+                subtitle: Text(
+                  'Prix : ${puzzle.prix.toStringAsFixed(2)} € - Stock : ${puzzle.stock}',
                 ),
+                onTap: () => _openDetailPage(puzzle),
               );
             },
           );

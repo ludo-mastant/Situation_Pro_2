@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class Puzzle {
   final int id;
   final String nom;
@@ -20,49 +17,65 @@ class Puzzle {
     required this.stock,
   });
 
-  factory Puzzle.fromJson(Map<String, dynamic> json) {
-    int parseInt(dynamic value) {
-      if (value is int) return value;
-      if (value is num) return value.toInt();
-      return int.tryParse(value?.toString() ?? '') ?? 0;
-    }
-
-    double parseDouble(dynamic value) {
-      if (value is double) return value;
-      if (value is num) return value.toDouble();
-      return double.tryParse(value?.toString() ?? '') ?? 0.0;
-    }
-
+  Puzzle copyWith({
+    int? id,
+    String? nom,
+    String? description,
+    String? image,
+    double? prix,
+    int? categorieId,
+    int? stock,
+  }) {
     return Puzzle(
-      id: parseInt(json['id']),
-      nom: json['nom']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      image: json['image']?.toString() ?? '',
-      prix: parseDouble(json['prix']),
-      categorieId: parseInt(json['categorie_id'] ?? json['categorie']),
-      stock: parseInt(json['stock']),
+      id: id ?? this.id,
+      nom: nom ?? this.nom,
+      description: description ?? this.description,
+      image: image ?? this.image,
+      prix: prix ?? this.prix,
+      categorieId: categorieId ?? this.categorieId,
+      stock: stock ?? this.stock,
     );
   }
 }
 
 class PuzzleService {
-  static const String apiUrl = 'http://groupe1.lycee.local/api/puzzles';
+  static final List<Puzzle> _puzzles = [
+    const Puzzle(
+      id: 1,
+      nom: 'Puzzle 3D Avancé',
+      description: 'Puzzle en 3D complexe',
+      image: '',
+      prix: 29.99,
+      categorieId: 2,
+      stock: 10,
+    ),
+    const Puzzle(
+      id: 2,
+      nom: 'Casse-tête en bois',
+      description: 'Un casse-tête classique en bois',
+      image: '',
+      prix: 15.50,
+      categorieId: 3,
+      stock: 5,
+    ),
+    const Puzzle(
+      id: 3,
+      nom: 'Puzzle enfant',
+      description: 'Puzzle facile pour enfant',
+      image: '',
+      prix: 9.99,
+      categorieId: 4,
+      stock: 8,
+    ),
+  ];
+
+  static int _nextId = 4;
 
   Future<List<Puzzle>> fetchPuzzles() async {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {'Accept': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> body = jsonDecode(response.body);
-      return body.map((item) => Puzzle.fromJson(item)).toList();
-    } else {
-      throw Exception('Erreur chargement puzzles : ${response.body}');
-    }
+    return List<Puzzle>.from(_puzzles);
   }
 
-  Future<Puzzle> createPuzzle({
+  Future<void> createPuzzle({
     required String nom,
     required String description,
     required String image,
@@ -70,23 +83,20 @@ class PuzzleService {
     required int categorieId,
     required int stock,
   }) async {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Accept': 'application/json'},
-      body: {
-        'nom': nom,
-        'description': description,
-        'image': image,
-        'prix': prix.toString(),
-        'categorie_id': categorieId.toString(),
-        'stock': stock.toString(),
-      },
+    final puzzle = Puzzle(
+      id: _nextId++,
+      nom: nom,
+      description: description,
+      image: image,
+      prix: prix,
+      categorieId: categorieId,
+      stock: stock,
     );
 
-    return _parsePuzzleResponse(response);
+    _puzzles.add(puzzle);
   }
 
-  Future<Puzzle> updatePuzzle({
+  Future<void> updatePuzzle({
     required int id,
     required String nom,
     required String description,
@@ -95,48 +105,21 @@ class PuzzleService {
     required int categorieId,
     required int stock,
   }) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/$id'),
-      headers: {'Accept': 'application/json'},
-      body: {
-        '_method': 'PUT',
-        'nom': nom,
-        'description': description,
-        'image': image,
-        'prix': prix.toString(),
-        'categorie_id': categorieId.toString(),
-        'stock': stock.toString(),
-      },
-    );
+    final index = _puzzles.indexWhere((p) => p.id == id);
 
-    return _parsePuzzleResponse(response);
+    if (index == -1) return;
+
+    _puzzles[index] = _puzzles[index].copyWith(
+      nom: nom,
+      description: description,
+      image: image,
+      prix: prix,
+      categorieId: categorieId,
+      stock: stock,
+    );
   }
 
   Future<void> deletePuzzle(int id) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/$id'),
-      headers: {'Accept': 'application/json'},
-      body: {
-        '_method': 'DELETE',
-      },
-    );
-
-    if (response.statusCode != 200 && response.statusCode != 204) {
-      throw Exception('Erreur suppression puzzle : ${response.body}');
-    }
-  }
-
-  Puzzle _parsePuzzleResponse(http.Response response) {
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final dynamic decoded = jsonDecode(response.body);
-      if (decoded is Map<String, dynamic>) {
-        return Puzzle.fromJson(decoded);
-      }
-      throw Exception('Réponse API invalide');
-    } else {
-      throw Exception(
-        'Erreur ${response.statusCode} : ${response.body}',
-      );
-    }
+    _puzzles.removeWhere((p) => p.id == id);
   }
 }
