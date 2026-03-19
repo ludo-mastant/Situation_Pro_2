@@ -55,11 +55,41 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
     }
   }
 
+  Future<void> _showJson() async {
+    final json = await PuzzleService().exportToJson();
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('JSON'),
+          content: SingleChildScrollView(
+            child: SelectableText(json),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des puzzles'),
+        actions: [
+          IconButton(
+            onPressed: _showJson,
+            icon: const Icon(Icons.code),
+          ),
+        ],
       ),
       body: FutureBuilder<List<Puzzle>>(
         future: _futurePuzzles,

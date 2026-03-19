@@ -54,9 +54,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     final service = PuzzleService();
 
@@ -92,7 +90,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
     Navigator.pop(context, true);
   }
 
-  Future<void> _delete() async {
+  Future<void> _deleteOrClear() async {
     if (!_isEdit) {
       _nomController.clear();
       _categorieIdController.clear();
@@ -220,7 +218,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
                 child: const Text('Annuler'),
               ),
               TextButton(
-                onPressed: _delete,
+                onPressed: _deleteOrClear,
                 child: Text(_isEdit ? 'Supprimer' : 'Vider'),
               ),
             ],
