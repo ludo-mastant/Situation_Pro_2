@@ -61,7 +61,7 @@ Système : API RESTful partagée avec l'application web
 - Application développée à partir d'une **base existante** fournie par le professeur
 - Accès aux données via une **API RESTful** partagée avec l'app web
 - Base de données **commune** avec la SP1
-- Versioning via **GitLab**
+- Versioning via **GitHub**
 
 ### Bénéfices attendus
 
