@@ -14,7 +14,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _nomController;
-  late final TextEditingController _categorieIdController;
+  late final TextEditingController _categorieIdController; // ✅ AJOUT
   late final TextEditingController _prixController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _imageController;
@@ -28,24 +28,22 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
 
     _nomController = TextEditingController(text: widget.puzzle?.nom ?? '');
     _categorieIdController = TextEditingController(
-      text: widget.puzzle != null ? widget.puzzle!.categorieId.toString() : '',
-    );
-    _prixController = TextEditingController(
-      text: widget.puzzle != null ? widget.puzzle!.prix.toString() : '',
-    );
-    _descriptionController = TextEditingController(
-      text: widget.puzzle?.description ?? '',
-    );
-    _imageController = TextEditingController(text: widget.puzzle?.image ?? '');
-    _stockController = TextEditingController(
-      text: widget.puzzle != null ? widget.puzzle!.stock.toString() : '',
-    );
+      text: widget.puzzle?.categorieId.toString() ?? '',
+    ); // ✅ AJOUT
+    _prixController =
+        TextEditingController(text: widget.puzzle?.prix.toString() ?? '');
+    _descriptionController =
+        TextEditingController(text: widget.puzzle?.description ?? '');
+    _imageController =
+        TextEditingController(text: widget.puzzle?.image ?? '');
+    _stockController =
+        TextEditingController(text: widget.puzzle?.stock.toString() ?? '');
   }
 
   @override
   void dispose() {
     _nomController.dispose();
-    _categorieIdController.dispose();
+    _categorieIdController.dispose(); // ✅ AJOUT
     _prixController.dispose();
     _descriptionController.dispose();
     _imageController.dispose();
@@ -58,32 +56,33 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
 
     final service = PuzzleService();
 
-    final nom = _nomController.text.trim();
-    final categorieId = int.parse(_categorieIdController.text.trim());
-    final prix = double.parse(_prixController.text.trim().replaceAll(',', '.'));
-    final description = _descriptionController.text.trim();
-    final image = _imageController.text.trim();
-    final stock = int.parse(_stockController.text.trim());
+    final categorieId =
+        int.parse(_categorieIdController.text.trim()); // ✅ FIX
+
+    // ✅ sécurité FK
+    if (categorieId < 1 || categorieId > 5) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Catégorie invalide (1 à 5)')),
+      );
+      return;
+    }
+
+    final data = {
+      "nom": _nomController.text.trim(),
+      "categorie_id": categorieId, // ✅ FIX IMPORTANT
+      "prix": double.parse(
+          _prixController.text.trim().replaceAll(',', '.')),
+      "description": _descriptionController.text.trim(),
+      "image": _imageController.text.trim().isEmpty
+          ? "default.jpg"
+          : _imageController.text.trim(),
+      "stock": int.parse(_stockController.text.trim()),
+    };
 
     if (_isEdit) {
-      await service.updatePuzzle(
-        id: widget.puzzle!.id,
-        nom: nom,
-        description: description,
-        image: image,
-        prix: prix,
-        categorieId: categorieId,
-        stock: stock,
-      );
+      await service.updatePuzzle(widget.puzzle!.id, data);
     } else {
-      await service.createPuzzle(
-        nom: nom,
-        description: description,
-        image: image,
-        prix: prix,
-        categorieId: categorieId,
-        stock: stock,
-      );
+      await service.createPuzzle(data);
     }
 
     if (!mounted) return;
@@ -93,33 +92,28 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   Future<void> _deleteOrClear() async {
     if (!_isEdit) {
       _nomController.clear();
-      _categorieIdController.clear();
+      _categorieIdController.clear(); // ✅ FIX
       _prixController.clear();
       _descriptionController.clear();
       _imageController.clear();
       _stockController.clear();
-      setState(() {});
       return;
     }
 
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirmation'),
-          content: const Text('Supprimer ce puzzle ?'),
-          actions: [
-            TextButton(
+      builder: (_) => AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Supprimer ce puzzle ?'),
+        actions: [
+          TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Annuler'),
-            ),
-            TextButton(
+              child: const Text('Annuler')),
+          TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Supprimer'),
-            ),
-          ],
-        );
-      },
+              child: const Text('Supprimer')),
+        ],
+      ),
     );
 
     if (confirm == true) {
@@ -133,7 +127,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEdit ? 'Modifier un puzzle' : 'Ajouter un puzzle'),
+        title: Text(_isEdit ? 'Modifier' : 'Ajouter'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -144,79 +138,72 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
               TextFormField(
                 controller: _nomController,
                 decoration: const InputDecoration(labelText: 'Nom'),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Veuillez entrer un nom';
-                  }
-                  return null;
-                },
+                validator: (v) =>
+                    v!.isEmpty ? 'Champ obligatoire' : null,
               ),
+
               TextFormField(
                 controller: _categorieIdController,
-                decoration: const InputDecoration(labelText: 'Catégorie ID'),
+                decoration:
+                    const InputDecoration(labelText: 'Catégorie ID'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Veuillez entrer une catégorie';
                   }
                   if (int.tryParse(value.trim()) == null) {
-                    return 'Veuillez entrer un nombre';
+                    return 'Nombre invalide';
                   }
                   return null;
                 },
               ),
+
               TextFormField(
                 controller: _prixController,
                 decoration: const InputDecoration(labelText: 'Prix'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Veuillez entrer un prix';
-                  }
-                  if (double.tryParse(value.trim().replaceAll(',', '.')) == null) {
-                    return 'Veuillez entrer un prix valide';
-                  }
-                  return null;
-                },
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                validator: (v) =>
+                    double.tryParse(v!.replaceAll(',', '.')) == null
+                        ? 'Prix invalide'
+                        : null,
               ),
+
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Veuillez entrer une description';
-                  }
-                  return null;
-                },
+                decoration:
+                    const InputDecoration(labelText: 'Description'),
+                validator: (v) =>
+                    v!.isEmpty ? 'Champ obligatoire' : null,
               ),
+
               TextFormField(
                 controller: _imageController,
-                decoration: const InputDecoration(labelText: 'Image'),
+                decoration:
+                    const InputDecoration(labelText: 'Image'),
               ),
+
               TextFormField(
                 controller: _stockController,
-                decoration: const InputDecoration(labelText: 'Stock'),
+                decoration:
+                    const InputDecoration(labelText: 'Stock'),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Veuillez entrer un stock';
-                  }
-                  if (int.tryParse(value.trim()) == null) {
-                    return 'Veuillez entrer un nombre';
-                  }
-                  return null;
-                },
+                validator: (v) =>
+                    int.tryParse(v!) == null ? 'Nombre invalide' : null,
               ),
+
               const SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: _save,
                 child: Text(_isEdit ? 'Modifier' : 'Créer'),
               ),
+
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Annuler'),
               ),
+
               TextButton(
                 onPressed: _deleteOrClear,
                 child: Text(_isEdit ? 'Supprimer' : 'Vider'),
