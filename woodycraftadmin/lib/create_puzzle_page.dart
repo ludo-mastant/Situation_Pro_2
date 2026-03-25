@@ -14,7 +14,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _nomController;
-  late final TextEditingController _categorieIdController; // ✅ AJOUT
+  late final TextEditingController _categorieIdController;
   late final TextEditingController _prixController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _imageController;
@@ -25,11 +25,10 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   @override
   void initState() {
     super.initState();
-
     _nomController = TextEditingController(text: widget.puzzle?.nom ?? '');
     _categorieIdController = TextEditingController(
       text: widget.puzzle?.categorieId.toString() ?? '',
-    ); // ✅ AJOUT
+    );
     _prixController =
         TextEditingController(text: widget.puzzle?.prix.toString() ?? '');
     _descriptionController =
@@ -43,7 +42,7 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   @override
   void dispose() {
     _nomController.dispose();
-    _categorieIdController.dispose(); // ✅ AJOUT
+    _categorieIdController.dispose();
     _prixController.dispose();
     _descriptionController.dispose();
     _imageController.dispose();
@@ -55,11 +54,8 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
     if (!_formKey.currentState!.validate()) return;
 
     final service = PuzzleService();
+    final categorieId = int.parse(_categorieIdController.text.trim());
 
-    final categorieId =
-        int.parse(_categorieIdController.text.trim()); // ✅ FIX
-
-    // ✅ sécurité FK
     if (categorieId < 1 || categorieId > 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Catégorie invalide (1 à 5)')),
@@ -69,9 +65,8 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
 
     final data = {
       "nom": _nomController.text.trim(),
-      "categorie_id": categorieId, // ✅ FIX IMPORTANT
-      "prix": double.parse(
-          _prixController.text.trim().replaceAll(',', '.')),
+      "categorie_id": categorieId,
+      "prix": double.parse(_prixController.text.trim().replaceAll(',', '.')),
       "description": _descriptionController.text.trim(),
       "image": _imageController.text.trim().isEmpty
           ? "default.jpg"
@@ -92,11 +87,12 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
   Future<void> _deleteOrClear() async {
     if (!_isEdit) {
       _nomController.clear();
-      _categorieIdController.clear(); // ✅ FIX
+      _categorieIdController.clear();
       _prixController.clear();
       _descriptionController.clear();
       _imageController.clear();
       _stockController.clear();
+      setState(() {});
       return;
     }
 
@@ -138,10 +134,8 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
               TextFormField(
                 controller: _nomController,
                 decoration: const InputDecoration(labelText: 'Nom'),
-                validator: (v) =>
-                    v!.isEmpty ? 'Champ obligatoire' : null,
+                validator: (v) => v!.isEmpty ? 'Champ obligatoire' : null,
               ),
-
               TextFormField(
                 controller: _categorieIdController,
                 decoration:
@@ -157,7 +151,6 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
                   return null;
                 },
               ),
-
               TextFormField(
                 controller: _prixController,
                 decoration: const InputDecoration(labelText: 'Prix'),
@@ -168,42 +161,32 @@ class _CreatePuzzlePageState extends State<CreatePuzzlePage> {
                         ? 'Prix invalide'
                         : null,
               ),
-
               TextFormField(
                 controller: _descriptionController,
                 decoration:
                     const InputDecoration(labelText: 'Description'),
-                validator: (v) =>
-                    v!.isEmpty ? 'Champ obligatoire' : null,
+                validator: (v) => v!.isEmpty ? 'Champ obligatoire' : null,
               ),
-
               TextFormField(
                 controller: _imageController,
-                decoration:
-                    const InputDecoration(labelText: 'Image'),
+                decoration: const InputDecoration(labelText: 'Image'),
               ),
-
               TextFormField(
                 controller: _stockController,
-                decoration:
-                    const InputDecoration(labelText: 'Stock'),
+                decoration: const InputDecoration(labelText: 'Stock'),
                 keyboardType: TextInputType.number,
                 validator: (v) =>
                     int.tryParse(v!) == null ? 'Nombre invalide' : null,
               ),
-
               const SizedBox(height: 20),
-
               ElevatedButton(
                 onPressed: _save,
                 child: Text(_isEdit ? 'Modifier' : 'Créer'),
               ),
-
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Annuler'),
               ),
-
               TextButton(
                 onPressed: _deleteOrClear,
                 child: Text(_isEdit ? 'Supprimer' : 'Vider'),

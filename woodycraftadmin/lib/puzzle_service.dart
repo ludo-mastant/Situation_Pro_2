@@ -58,19 +58,19 @@ class PuzzleService {
     }
   }
 
-Future<void> createPuzzle(Map<String, dynamic> data) async {
-  final response = await http.post(
-    Uri.parse(apiUrl),
-    body: data.map((key, value) => MapEntry(key, value.toString())),
-  );
+  Future<void> createPuzzle(Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: data.map((key, value) => MapEntry(key, value.toString())),
+    );
 
-  print("STATUS: ${response.statusCode}");
-  print("BODY: ${response.body}");
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
 
-  if (response.statusCode != 200 && response.statusCode != 201) {
-    throw Exception('Erreur création: ${response.body}');
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Erreur création: ${response.body}');
+    }
   }
-}
 
   Future<void> updatePuzzle(int id, Map<String, dynamic> data) async {
     final response = await http.put(
@@ -94,10 +94,8 @@ Future<void> createPuzzle(Map<String, dynamic> data) async {
 
   Future<String> exportToJson() async {
     final puzzles = await fetchPuzzles();
-
     final List<Map<String, dynamic>> jsonList =
         puzzles.map((p) => p.toJson()).toList();
-
     return jsonEncode(jsonList);
   }
 }

@@ -36,7 +36,6 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
         builder: (context) => const CreatePuzzlePage(),
       ),
     );
-
     if (result == true) {
       await _refreshPuzzles();
     }
@@ -49,7 +48,6 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
         builder: (context) => PuzzleDetailPage(puzzle: puzzle),
       ),
     );
-
     if (result == true) {
       await _refreshPuzzles();
     }
@@ -57,17 +55,13 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
 
   Future<void> _showJson() async {
     final json = await PuzzleService().exportToJson();
-
     if (!mounted) return;
-
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('JSON'),
-          content: SingleChildScrollView(
-            child: SelectableText(json),
-          ),
+          content: SingleChildScrollView(child: SelectableText(json)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -97,26 +91,17 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
-            return Center(
-              child: Text('Erreur : ${snapshot.error}'),
-            );
+            return Center(child: Text('Erreur : ${snapshot.error}'));
           }
-
           final puzzles = snapshot.data ?? [];
-
           if (puzzles.isEmpty) {
-            return const Center(
-              child: Text('Aucun puzzle'),
-            );
+            return const Center(child: Text('Aucun puzzle'));
           }
-
           return ListView.builder(
             itemCount: puzzles.length,
             itemBuilder: (context, index) {
               final puzzle = puzzles[index];
-
               return ListTile(
                 title: Text(puzzle.nom),
                 subtitle: Text(
