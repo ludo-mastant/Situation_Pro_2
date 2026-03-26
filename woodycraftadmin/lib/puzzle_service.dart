@@ -32,7 +32,8 @@ class Puzzle {
 }
 
 class PuzzleService {
-  final String apiUrl = "http://localhost/woodycraftweb/public/api/puzzles"; // URL de l'API Laravel
+  final String apiUrl =
+      "http://groupe1.lycee.local/api/puzzles"; // URL de l'API Laravel
 
   // Fonction pour récupérer tous les puzzles
   Future<List<Puzzle>> fetchPuzzles() async {
@@ -40,7 +41,8 @@ class PuzzleService {
 
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
-      List<Puzzle> puzzles = body.map((dynamic item) => Puzzle.fromJson(item)).toList();
+      List<Puzzle> puzzles =
+          body.map((dynamic item) => Puzzle.fromJson(item)).toList();
       return puzzles;
     } else {
       throw Exception('Failed to load puzzles');
@@ -49,7 +51,8 @@ class PuzzleService {
 
   // Fonction pour ajouter un nouveau puzzle (POST)
   // Fonction pour ajouter un nouveau puzzle (POST)
-Future<Puzzle> createPuzzle(String nom, String description, String image, double prix, String categorie) async {
+  Future<Puzzle> createPuzzle(String nom, String description, String image,
+      double prix, String categorie) async {
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: {
@@ -67,8 +70,8 @@ Future<Puzzle> createPuzzle(String nom, String description, String image, double
     if (response.statusCode == 201) {
       return Puzzle.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to create puzzle: ${response.body}'); // Afficher le corps de la réponse en cas d'erreur
+      throw Exception(
+          'Failed to create puzzle: ${response.body}'); // Afficher le corps de la réponse en cas d'erreur
     }
-}
-
+  }
 }
