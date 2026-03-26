@@ -27,8 +27,8 @@ class Puzzle {
       description: json['description'] ?? '',
       image: json['image'] ?? '',
       prix: (json['prix'] as num).toDouble(),
-      categorieId: json['categorie_id'],
-      stock: json['stock'],
+      categorieId: json['categorie_id'] ?? 1,
+      stock: json['stock'] ?? 0,
     );
   }
 
@@ -48,37 +48,35 @@ class PuzzleService {
   final String apiUrl = "http://groupe1.lycee.local/api/puzzles";
 
   Future<List<Puzzle>> fetchPuzzles() async {
-    final response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      return body.map((e) => Puzzle.fromJson(e)).toList();
-    } else {
-      throw Exception('Erreur chargement puzzles');
+    try {
+      final response = await http.get(Uri.parse(apiUrl)).timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        List<dynamic> body = jsonDecode(response.body);
+        return body.map((e) => Puzzle.fromJson(e)).toList();
+      }
+      throw Exception('Erreur chargement');
+    } catch (e) {
+      throw Exception('API inaccessible : $e');
     }
   }
 
-Future<void> createPuzzle(Map<String, dynamic> data) async {
-  final response = await http.post(
-    Uri.parse(apiUrl),
-    body: data.map((key, value) => MapEntry(key, value.toString())),
-  );
-
-  print("STATUS: ${response.statusCode}");
-  print("BODY: ${response.body}");
-
-  if (response.statusCode != 200 && response.statusCode != 201) {
-    throw Exception('Erreur création: ${response.body}');
+  Future<void> createPuzzle(Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: jsonEncode(data),
+    );
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Erreur création: ${response.body}');
+    }
   }
-}
 
   Future<void> updatePuzzle(int id, Map<String, dynamic> data) async {
     final response = await http.put(
       Uri.parse('$apiUrl/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: jsonEncode(data),
     );
-
     if (response.statusCode != 200) {
       throw Exception('Erreur update: ${response.body}');
     }
@@ -86,18 +84,8 @@ Future<void> createPuzzle(Map<String, dynamic> data) async {
 
   Future<void> deletePuzzle(int id) async {
     final response = await http.delete(Uri.parse('$apiUrl/$id'));
-
     if (response.statusCode != 200 && response.statusCode != 204) {
-      throw Exception('Erreur suppression: ${response.body}');
+      throw Exception('Erreur suppression');
     }
-  }
-
-  Future<String> exportToJson() async {
-    final puzzles = await fetchPuzzles();
-
-    final List<Map<String, dynamic>> jsonList =
-        puzzles.map((p) => p.toJson()).toList();
-
-    return jsonEncode(jsonList);
   }
 }
