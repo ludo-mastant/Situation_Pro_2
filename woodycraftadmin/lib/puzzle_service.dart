@@ -45,11 +45,7 @@ class Puzzle {
 }
 
 class PuzzleService {
-<<<<<<< HEAD
   final String apiUrl = "http://groupe1.lycee.local/api/puzzles"; // URL de l'API Laravel
-=======
-  final String apiUrl = "http://groupe1.lycee.local/api/puzzles";
->>>>>>> dev
 
   Future<List<Puzzle>> fetchPuzzles() async {
     final response = await http.get(Uri.parse(apiUrl));

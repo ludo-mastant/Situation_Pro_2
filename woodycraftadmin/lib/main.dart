@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'admin_home_page.dart';
+import 'admin_dashboard_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFFF5F0E8),
         scaffoldBackgroundColor: const Color(0xFFF5F0E8),
       ),
-      home: const AdminHomePage(),
+      home: const AdminDashboardPage(),
     );
   }
 }
