@@ -1,3 +1,4 @@
+import 'stocks.dart';
 import 'package:flutter/material.dart';
 import 'puzzle_service.dart'; // Importer PuzzleService
 import 'create_puzzle_page.dart'; // Importer CreatePuzzlePage
@@ -12,26 +13,22 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
   int _selectedIndex = 0;
   String _affichage = "Accueil";
 
-  void _itemClique(int index){
-    setState(() {
-      _selectedIndex = index;
-      switch(_selectedIndex){
-        case 0:
-        {
-          _affichage = 'Accueil';
-        }
-        case 1:
-        {
-          _affichage = 'Gestion catalogue';
-        }
-        case 2:
-        {
-          _affichage = 'Gestion commandes';
-        }
-        break;
-      }
-    });
+  void _itemClique(int index) {
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  // Logique de redirection selon l'index cliqué
+  if (index == 1) { // 1 est l'index du bouton "Stocks"
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => StocksPage()),
+    );
+  } else if (index == 2) {
+    // Optionnel : redirection vers les commandes plus tard
+    print("Page commandes demandée");
   }
+}
 
   @override
   void initState() {
@@ -53,7 +50,7 @@ class _PuzzleListPageState extends State<PuzzleListPage> {
             ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
-            label: 'Catalogue',
+            label: 'Stocks',
             ),
           BottomNavigationBarItem(
             icon: Icon(Icons.linear_scale),
