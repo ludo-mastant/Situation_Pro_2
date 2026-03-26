@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'admin_home_page.dart';
 import 'admin_dashboard_page.dart';
+import 'admin_orders_page.dart'; // Importation de la page d'interface
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'WoodyCraft Admin',
       theme: ThemeData(
         primarySwatch: Colors.brown,
         scaffoldBackgroundColor: const Color(0xFFF5F0E8),
@@ -33,33 +33,24 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _selectedIndex = 0;
 
-  // Liste des écrans disponibles
   final List<Widget> _pages = [
     const AdminDashboardPage(),
     const AdminHomePage(),
-    const Center(child: Text("Page Stocks à venir")),
-    const Center(child: Text("Page Commandes à venir")),
+    const AdminOrdersPage(), // On affiche la page des commandes ici
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFF8B6F47),
-        unselectedItemColor: const Color(0xFF9E8B7A),
-        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Stats'),
           BottomNavigationBarItem(icon: Icon(Icons.extension_rounded), label: 'Puzzles'),
-          BottomNavigationBarItem(icon: Icon(Icons.inventory_2_rounded), label: 'Stocks'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_rounded), label: 'Commandes'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_rounded), label: 'Commandes'),
         ],
       ),
     );
