@@ -1,105 +1,121 @@
 import 'package:flutter/material.dart';
-import 'puzzle_service.dart'; // Importer PuzzleService
-import 'create_puzzle_page.dart'; // Importer CreatePuzzlePage
+import 'create_puzzle_page.dart';
+import 'puzzle_detail_page.dart';
+import 'puzzle_service.dart';
 
 class PuzzleListPage extends StatefulWidget {
+  const PuzzleListPage({super.key});
+
   @override
-  _PuzzleListPageState createState() => _PuzzleListPageState();
+  State<PuzzleListPage> createState() => _PuzzleListPageState();
 }
 
 class _PuzzleListPageState extends State<PuzzleListPage> {
-  late Future<List<Puzzle>> futurePuzzles;
-  int _selectedIndex = 0;
-  String _affichage = "Accueil";
-
-  void _itemClique(int index){
-    setState(() {
-      _selectedIndex = index;
-      switch(_selectedIndex){
-        case 0:
-        {
-          _affichage = 'Accueil';
-        }
-        case 1:
-        {
-          _affichage = 'Gestion catalogue';
-        }
-        case 2:
-        {
-          _affichage = 'Gestion commandes';
-        }
-        break;
-      }
-    });
-  }
+  late Future<List<Puzzle>> _futurePuzzles;
 
   @override
   void initState() {
     super.initState();
-    futurePuzzles = PuzzleService().fetchPuzzles(); // Appel de fetchPuzzles
+    _loadPuzzles();
+  }
+
+  void _loadPuzzles() {
+    _futurePuzzles = PuzzleService().fetchPuzzles();
+  }
+
+  Future<void> _refreshPuzzles() async {
+    setState(() {
+      _loadPuzzles();
+    });
+  }
+
+  Future<void> _openCreatePage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreatePuzzlePage(),
+      ),
+    );
+    if (result == true) {
+      await _refreshPuzzles();
+    }
+  }
+
+  Future<void> _openDetailPage(Puzzle puzzle) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PuzzleDetailPage(puzzle: puzzle),
+      ),
+    );
+    if (result == true) {
+      await _refreshPuzzles();
+    }
+  }
+
+  Future<void> _showJson() async {
+    final json = await PuzzleService().exportToJson();
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('JSON'),
+          content: SingleChildScrollView(child: SelectableText(json)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestion du catalogue'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
-            label: 'Catalogue',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.linear_scale),
-            label: 'Commandes',
-            ),
+        title: const Text('Liste des puzzles'),
+        actions: [
+          IconButton(
+            onPressed: _showJson,
+            icon: const Icon(Icons.code),
+          ),
         ],
-        backgroundColor: Colors.blue,
-        onTap: _itemClique,
-        currentIndex: _selectedIndex,
-        ),
+      ),
       body: FutureBuilder<List<Puzzle>>(
-        future: futurePuzzles,
+        future: _futurePuzzles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erreur: ${snapshot.error}'));
-          } else {
-            final puzzles = snapshot.data!;
-            return ListView.builder(
-              itemCount: puzzles.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(puzzles[index].nom),
-                  subtitle: Text(puzzles[index].description),
-                );
-              },
-            );
+            return const Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError) {
+            return Center(child: Text('Erreur : ${snapshot.error}'));
+          }
+          final puzzles = snapshot.data ?? [];
+          if (puzzles.isEmpty) {
+            return const Center(child: Text('Aucun puzzle'));
+          }
+          return ListView.builder(
+            itemCount: puzzles.length,
+            itemBuilder: (context, index) {
+              final puzzle = puzzles[index];
+              return ListTile(
+                title: Text(puzzle.nom),
+                subtitle: Text(
+                  'Prix : ${puzzle.prix.toStringAsFixed(2)} € - Stock : ${puzzle.stock}',
+                ),
+                onTap: () => _openDetailPage(puzzle),
+              );
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePuzzlePage()),
-          ).then((value) {
-            if (value == true) {
-              // Rafraîchir la liste après ajout
-              setState(() {
-                futurePuzzles = PuzzleService().fetchPuzzles(); // Récupérer à nouveau les puzzles
-              });
-            }
-          });
-        },
-        child: Icon(Icons.add),
+        onPressed: _openCreatePage,
+        child: const Icon(Icons.add),
       ),
     );
   }
