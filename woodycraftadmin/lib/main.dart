@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'admin_home_page.dart';
 import 'admin_dashboard_page.dart';
 import 'admin_orders_page.dart';
-import 'stocks_page.dart'; // Nouveau
+import 'stocks_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
-        scaffoldBackgroundColor: const Color(0xFFF5F0E8),
+        scaffoldBackgroundColor: const Color(0xFFFFE8CC),
       ),
       home: const MainNavigationPage(),
     );
@@ -38,7 +38,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     const AdminDashboardPage(),
     const AdminHomePage(),
     const AdminOrdersPage(),
-    const StocksPage(), // Nouveau
+    const StocksPage(),
   ];
 
   @override
@@ -50,7 +50,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         onTap: (index) => setState(() => _selectedIndex = index),
         selectedItemColor: const Color(0xFF8B6F47),
         unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed, // Nécessaire pour 4+ onglets
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_rounded),

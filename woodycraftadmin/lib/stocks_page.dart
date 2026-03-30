@@ -10,11 +10,10 @@ class StocksPage extends StatefulWidget {
 }
 
 class _StocksPageState extends State<StocksPage> {
-  // Palette WoodyCraft
-  static const Color bg = Color(0xFFF5F0E8);
-  static const Color accent = Color(0xFF8B6F47);
-  static const Color textDark = Color(0xFF2C1810);
-  static const Color danger = Color(0xFFB85C5C);
+  static const Color bg        = Color(0xFFFFE8CC);
+  static const Color accent    = Color(0xFF8B6F47);
+  static const Color textDark  = Color(0xFF2C1810);
+  static const Color danger    = Color(0xFFB85C5C);
   static const Color cardColor = Color(0xFFFFFFFF);
 
   List<dynamic> _puzzles = [];
@@ -40,11 +39,11 @@ class _StocksPageState extends State<StocksPage> {
           _isLoading = false;
         });
       } else {
-        _showMessage("Erreur serveur (${response.statusCode})");
+        _showMessage('Erreur serveur (${response.statusCode})');
         setState(() => _isLoading = false);
       }
     } catch (e) {
-      _showMessage("Erreur de connexion : $e");
+      _showMessage('Erreur de connexion : $e');
       setState(() => _isLoading = false);
     }
   }
@@ -53,30 +52,27 @@ class _StocksPageState extends State<StocksPage> {
     if (nouvelleValeur < 0) return;
     try {
       final response = await http.patch(
-        Uri.parse("$apiUrl/$id"),
+        Uri.parse('$apiUrl/$id'),
         headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: jsonEncode({"quantite": nouvelleValeur}),
+        body: jsonEncode({'quantite': nouvelleValeur}),
       );
       if (response.statusCode == 200) {
         _fetchStocks();
       } else {
-        _showMessage("Erreur mise à jour (${response.statusCode})");
+        _showMessage('Erreur mise à jour (${response.statusCode})');
       }
     } catch (e) {
-      _showMessage("Erreur réseau : $e");
+      _showMessage('Erreur réseau : $e');
     }
   }
 
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: danger,
-      ),
+      SnackBar(content: Text(message), backgroundColor: danger),
     );
   }
 
@@ -90,10 +86,7 @@ class _StocksPageState extends State<StocksPage> {
         centerTitle: true,
         title: const Text(
           'Gestion des Stocks',
-          style: TextStyle(
-            color: textDark,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: textDark, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: accent),
         actions: [
@@ -106,7 +99,7 @@ class _StocksPageState extends State<StocksPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: accent))
           : _puzzles.isEmpty
-              ? const Center(child: Text("Aucun produit trouvé."))
+              ? const Center(child: Text('Aucun produit trouvé.'))
               : RefreshIndicator(
                   onRefresh: _fetchStocks,
                   child: ListView.builder(
@@ -114,7 +107,8 @@ class _StocksPageState extends State<StocksPage> {
                     itemCount: _puzzles.length,
                     itemBuilder: (context, index) {
                       final p = _puzzles[index];
-                      final int currentQty = p['stock'] ?? p['quantite'] ?? 0;
+                      final int currentQty =
+                          p['stock'] ?? p['quantite'] ?? 0;
                       final bool isLow = currentQty <= 3;
 
                       return Card(
@@ -154,7 +148,7 @@ class _StocksPageState extends State<StocksPage> {
                             ),
                           ),
                           subtitle: Text(
-                            isLow ? "Stock bas !" : "En stock",
+                            isLow ? 'Stock bas !' : 'En stock',
                             style: TextStyle(
                               color: isLow ? danger : accent,
                               fontSize: 12,
@@ -173,7 +167,7 @@ class _StocksPageState extends State<StocksPage> {
                               SizedBox(
                                 width: 32,
                                 child: Text(
-                                  "$currentQty",
+                                  '$currentQty',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: textDark,

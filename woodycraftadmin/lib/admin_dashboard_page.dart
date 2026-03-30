@@ -11,16 +11,16 @@ class AdminDashboardPage extends StatefulWidget {
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
   late Future<DashboardResume> futureResume;
 
-  static const Color bg = Color(0xFFF5F0E8);
-  static const Color card = Color(0xFFFFFFFF);
-  static const Color accent = Color(0xFF8B6F47);
+  static const Color bg         = Color(0xFFFFE8CC);
+  static const Color card       = Color(0xFFFFFFFF);
+  static const Color accent     = Color(0xFF8B6F47);
   static const Color accentLight = Color(0xFFD4B896);
-  static const Color textDark = Color(0xFF2C1810);
-  static const Color textGrey = Color(0xFF9E8B7A);
-  static const Color success = Color(0xFF6B9E6B);
-  static const Color warning = Color(0xFFD4874E);
-  static const Color danger = Color(0xFFB85C5C);
-  static const Color info = Color(0xFF6F8FB8);
+  static const Color textDark   = Color(0xFF2C1810);
+  static const Color textGrey   = Color(0xFF9E8B7A);
+  static const Color success    = Color(0xFF6B9E6B);
+  static const Color warning    = Color(0xFFD4874E);
+  static const Color danger     = Color(0xFFB85C5C);
+  static const Color info       = Color(0xFF6F8FB8);
 
   @override
   void initState() {
@@ -144,15 +144,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         children: [
           Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 34),
           SizedBox(height: 14),
-          Text('Dashboard administrateur', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(
+            'Dashboard administrateur',
+            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 8),
-          Text('Vue centralisée de votre activité WoodyCraft.', style: TextStyle(color: Colors.white70, fontSize: 14)),
+          Text(
+            'Vue centralisée de votre activité WoodyCraft.',
+            style: TextStyle(color: Colors.white70, fontSize: 14),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatCard({required IconData icon, required String title, required String value, required String subtitle, required Color color}) {
+  Widget _buildStatCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required String subtitle,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -165,7 +177,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         children: [
           Icon(icon, color: color, size: 28),
           const Spacer(),
-          Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textDark)),
+          Text(value,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textDark)),
           Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
           Text(subtitle, style: const TextStyle(fontSize: 11, color: textGrey)),
         ],
@@ -176,8 +189,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget _buildErrorCard(String error) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: card, borderRadius: BorderRadius.circular(12), border: Border.all(color: danger)),
-      child: Text("Erreur API : $error", style: const TextStyle(color: danger)),
+      decoration: BoxDecoration(
+        color: card,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: danger),
+      ),
+      child: Text('Erreur API : $error', style: const TextStyle(color: danger)),
     );
   }
 }
