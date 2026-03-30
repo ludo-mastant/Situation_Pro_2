@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'admin_home_page.dart';
 import 'admin_dashboard_page.dart';
-import 'admin_orders_page.dart'; // Importation de la page d'interface
+import 'admin_orders_page.dart';
+import 'stocks_page.dart'; // Nouveau
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   final List<Widget> _pages = [
     const AdminDashboardPage(),
     const AdminHomePage(),
-    const AdminOrdersPage(), // On affiche la page des commandes ici
+    const AdminOrdersPage(),
+    const StocksPage(), // Nouveau
   ];
 
   @override
@@ -47,10 +49,25 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         selectedItemColor: const Color(0xFF8B6F47),
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed, // Nécessaire pour 4+ onglets
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Stats'),
-          BottomNavigationBarItem(icon: Icon(Icons.extension_rounded), label: 'Puzzles'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_rounded), label: 'Commandes'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_rounded),
+            label: 'Stats',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.extension_rounded),
+            label: 'Puzzles',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart_rounded),
+            label: 'Commandes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2_rounded),
+            label: 'Stocks',
+          ),
         ],
       ),
     );

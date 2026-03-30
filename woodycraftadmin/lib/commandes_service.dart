@@ -21,7 +21,9 @@ class Commande {
     return Commande(
       id: json['id'],
       statut: json['statut'] ?? 'en cours',
-      total: (json['total'] ?? 0).toDouble(),
+      total: (json['total'] is num)
+          ? (json['total'] as num).toDouble()
+          : 0.0, // ← c'était ça qui manquait
       items: itemsList,
     );
   }
@@ -53,8 +55,7 @@ class CommandesService {
       if (response.statusCode == 200) {
         final dynamic decoded = jsonDecode(response.body);
         List<dynamic> data;
-        
-        // Gestion si l'API renvoie { "data": [...] } ou directement [...]
+
         if (decoded is List) {
           data = decoded;
         } else if (decoded is Map && decoded.containsKey('data')) {
@@ -62,7 +63,7 @@ class CommandesService {
         } else {
           data = [];
         }
-        
+
         return data.map((item) => Commande.fromJson(item)).toList();
       }
       throw Exception('Erreur serveur (${response.statusCode})');
