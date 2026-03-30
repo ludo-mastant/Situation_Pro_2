@@ -17,7 +17,8 @@ class Commande {
   factory Commande.fromJson(Map<String, dynamic> json) {
     List<CommandeItem> items = [];
     if (json['items'] != null) {
-    total: (json['total'] is num)
+      statut: json['statut'] ?? '',
+      total: (json['total'] is num)
         ? (json['total'] as num).toDouble()
         : double.tryParse(json['total']?.toString() ?? '0') ?? 0.0,
     }
