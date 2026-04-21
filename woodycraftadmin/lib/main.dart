@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'puzzle_list_page.dart'; // Importer la page d'affichage des puzzles
+import 'login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,11 +9,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Puzzles',
+      title: 'WoodyCraft Admin',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PuzzleListPage(), // Affiche la liste des puzzles en page d'accueil
+      home: LoginPage(),
     );
   }
 }
