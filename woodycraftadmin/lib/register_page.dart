@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -21,10 +22,9 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
       _errorMessage = null;
     });
-
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/register'),
+        Uri.parse('http://localhost/Situation_Pro_2_Api/WoodyCraftWeb/public/api/register'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -35,10 +35,13 @@ class _RegisterPageState extends State<RegisterPage> {
           'password': _passwordController.text,
         }),
       );
-
       setState(() => _isLoading = false);
-
       if (response.statusCode == 201) {
+        // Sauvegarder le token
+        final data = jsonDecode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', data['token']);
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const MainNavigationPage()),

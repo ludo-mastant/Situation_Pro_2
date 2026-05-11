@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'auth_service.dart';
 import 'main.dart';
 import 'register_page.dart';
@@ -32,6 +33,10 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (token != null) {
+      // Sauvegarder le token
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainNavigationPage()),
@@ -187,7 +192,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterPage()),
+                          MaterialPageRoute(
+                              builder: (context) => RegisterPage()),
                         );
                       },
                       child: Text(
