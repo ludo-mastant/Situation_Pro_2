@@ -24,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
     try {
       final response = await http.post(
-        Uri.parse('http://localhost/Situation_Pro_2_Api/WoodyCraftWeb/public/api/register'),
+        Uri.parse('http://groupe1.lycee.local/api/register'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
