@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'admin_dashboard_service.dart';
+import 'login_page.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -50,6 +51,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           style: TextStyle(color: textDark, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: accent),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: accent),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,

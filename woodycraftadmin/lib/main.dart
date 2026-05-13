@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 import 'admin_home_page.dart';
 import 'admin_dashboard_page.dart';
 import 'admin_orders_page.dart';
@@ -15,12 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'WoodyCraft Admin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
         scaffoldBackgroundColor: const Color(0xFFFFE8CC),
       ),
-      home: const MainNavigationPage(),
+      home: LoginPage(),
     );
   }
 }
