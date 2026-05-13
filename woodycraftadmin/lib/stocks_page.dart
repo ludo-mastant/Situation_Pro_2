@@ -19,7 +19,7 @@ class _StocksPageState extends State<StocksPage> {
   List<dynamic> _puzzles = [];
   bool _isLoading = true;
 
-  final String apiUrl = 'http://groupe1.lycee.local/api/stocks';
+  final String apiUrl = 'http://127.0.0.1:8000/api/stocks';
 
   @override
   void initState() {

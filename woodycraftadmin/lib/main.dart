@@ -3,6 +3,7 @@ import 'admin_home_page.dart';
 import 'admin_dashboard_page.dart';
 import 'admin_orders_page.dart';
 import 'stocks_page.dart';
+import 'approvisionnement_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +40,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     const AdminHomePage(),
     const AdminOrdersPage(),
     const StocksPage(),
+    const ApprovisionnementPage(),
   ];
 
   @override
@@ -68,6 +70,10 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.inventory_2_rounded),
             label: 'Stocks',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.propane_tank_rounded),
+            label: 'Approvisonnement',
           ),
         ],
       ),

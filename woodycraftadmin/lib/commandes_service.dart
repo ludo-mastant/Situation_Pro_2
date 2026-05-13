@@ -205,7 +205,7 @@ class Commande {
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 class CommandesService {
-  final String apiUrl = "http://groupe1.lycee.local/api/paniers";
+  final String apiUrl = "http://127.0.0.1:8000/api/paniers";
 
   Future<List<Commande>> fetchCommandes() async {
     try {

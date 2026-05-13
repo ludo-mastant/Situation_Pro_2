@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // On utilise l'URL de base que tu as définie dans tes autres services
-  static const String baseUrl = "http://groupe1.lycee.local/api";
+  static const String baseUrl = "http://127.0.0.1:8000/api";
 
   static Future<dynamic> get(String endpoint) async {
     try {

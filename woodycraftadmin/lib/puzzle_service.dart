@@ -45,7 +45,7 @@ class Puzzle {
 }
 
 class PuzzleService {
-  final String apiUrl = "http://groupe1.lycee.local/api/puzzles";
+  final String apiUrl = "http://127.0.0.1:8000/api/puzzles";
 
   Future<List<Puzzle>> fetchPuzzles() async {
     try {
